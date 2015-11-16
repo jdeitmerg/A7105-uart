@@ -7,11 +7,11 @@ case is programming another chip over the air, so error-free bulk transfers
 are the top priority.
 
 ## Status
-No software running, not even the hardware is built.
+The soft UART works, kind of.
 
 ## Attributions
 For the soft UART, [**avr-softuart** by Brian Lalor
-](https://github.com/blalor/avr-softuart) will be used. It is based on the
+](https://github.com/blalor/avr-softuart) is used. It is based on the
 **Timer-based AVR Software-UART** by Martin Thomas, which in turn is based
 on the **generic software uart** by Colin Gittins.
 
