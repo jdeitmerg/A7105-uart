@@ -16,5 +16,5 @@ For the soft UART, [**avr-softuart** by Brian Lalor
 on the **generic software uart** by Colin Gittins.
 
 ## Licenses
-The submodule *avr-softuart* is licensed under a BSD-style license. All
+The submodule **avr-softuart** is licensed under a BSD-style license. All
 other modules are licensed under the GPL (see individual LICENCE files).

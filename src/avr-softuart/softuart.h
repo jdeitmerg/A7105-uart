@@ -3,16 +3,16 @@
     #define F_CPU 3686400UL
 #endif
 
-#define SOFTUART_BAUD_RATE      2400
+#define SOFTUART_BAUD_RATE      19200
 
 #if defined (__AVR_ATtiny25__) || defined (__AVR_ATtiny45__) || defined (__AVR_ATtiny85__)
     #define SOFTUART_RXPIN   PINB
     #define SOFTUART_RXDDR   DDRB
-    #define SOFTUART_RXBIT   PB0
+    #define SOFTUART_RXBIT   PB3
 
     #define SOFTUART_TXPORT  PORTB
     #define SOFTUART_TXDDR   DDRB
-    #define SOFTUART_TXBIT   PB1
+    #define SOFTUART_TXBIT   PB4
 
     #define SOFTUART_T_COMP_LABEL      TIM0_COMPA_vect
     #define SOFTUART_T_COMP_REG        OCR0A

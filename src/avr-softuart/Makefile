@@ -41,7 +41,7 @@
 
 
 # MCU name
-MCU = atmega328p
+MCU = attiny85
 
 
 # Processor frequency.
@@ -62,7 +62,7 @@ MCU = atmega328p
 #         F_CPU = 16000000
 #         F_CPU = 18432000
 #         F_CPU = 20000000
-F_CPU = 16000000
+F_CPU = 8000000
 
 
 # Output format. (can be srec, ihex, binary)
@@ -76,7 +76,7 @@ TARGET = main
 # Object files directory
 #     To put object files in current directory, use a dot (.), do NOT make
 #     this an empty or blank macro!
-OBJDIR = .
+OBJDIR = build
 
 
 # List C source files here. (C dependencies are automatically generated.)
