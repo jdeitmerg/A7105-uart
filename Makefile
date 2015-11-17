@@ -10,7 +10,8 @@ PG_PORT = /dev/serial/by-id/*mySmartUSBlight*
 PG_TARGET = t85
 
 # For serial programming using fastboot:
-SER_DEV = /dev/serial/by-id/*USB-Serial_Controller*
+#SER_DEV = /dev/serial/by-id/*USB-Serial_Controller*
+SER_DEV = /dev/serial/by-id/*USB_to_UART*
 SER_BAUD = 9600
 
 MMCU = attiny85
@@ -27,11 +28,15 @@ isp_check:
 	avrdude -p $(PG_TARGET) -c $(PG_TYPE) -P $(PG_PORT)
 
 isp_fuses:
-	# Internal 8MHz Oscillator, don't divide clock by 8, self
-	# programming enabled
-	# Extended may read back 0x00!
+	@# Internal 8MHz Oscillator, don't divide clock by 8, self
+	@# programming enabled
+	@# Extended may read back 0x00!
 	avrdude -p $(PG_TARGET) -c $(PG_TYPE) -P $(PG_PORT) -U\
 		lfuse:w:0xe2:m -U hfuse:w:0xdf:m -U efuse:w:0xfe:m
+	@# Internal 8MHz Oscillator, divide clock by 8, self programming
+	@#avrdude -p $(PG_TARGET) -c $(PG_TYPE) -P $(PG_PORT) -U\
+	@#	lfuse:w:0x62:m -U hfuse:w:0xdf:m -U efuse:w:0xfe:m
+	@# Extended may read back 0x00!
 
 isp_burn: $(BUILD_DIR)/main.elf
 	avrdude -p $(PG_TARGET) -c $(PG_TYPE) -P $(PG_PORT) -U\
