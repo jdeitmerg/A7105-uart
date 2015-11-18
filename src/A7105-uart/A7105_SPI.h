@@ -17,10 +17,10 @@
  *  along with A7105-uart.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "common.h"
-
 #ifndef A7105_SPI_H
 #define A7105_SPI_H
+
+#include "common.h"
 
 #define SPI_CS_PORT PORTB
 #define SPI_CS_PP   PB2

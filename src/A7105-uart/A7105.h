@@ -17,35 +17,14 @@
  *  along with A7105-uart.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef A7105_H
+#define A7015_H
+
 #include "common.h"
-#include "softuart.h"
-#include "A7105_SPI.h"
-#include "A7105.h"
 
-void init(void)
-{
-    softuart_init();
-    SPI_init();
-    A7105_init();
-    sei();
-}
+void A7105_reset(void);
+void A7105_init(void);
+uint8_t A7105_test(void);
 
-int main(void)
-{
-    init();
-
-    softuart_puts("Hello, World!\n\r");
-    softuart_puts("Testing connection to A7105... ");
-    if(A7105_test())
-    {
-        softuart_puts("Success! :)\n\r");
-    }
-    else
-    {
-        softuart_puts("Failure! :(\n\r");
-    }
-    while(1)
-    {
-    }
-}
+#endif
 

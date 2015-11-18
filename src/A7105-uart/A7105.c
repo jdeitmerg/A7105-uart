@@ -17,35 +17,24 @@
  *  along with A7105-uart.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "common.h"
-#include "softuart.h"
-#include "A7105_SPI.h"
 #include "A7105.h"
+#include "A7105_SPI.h"
 
-void init(void)
+void A7105_reset(void)
 {
-    softuart_init();
-    SPI_init();
-    A7105_init();
-    sei();
+    SPI_reg_write(0x00, 0x00);
+    _delay_us(100); //probably a waste of time
 }
 
-int main(void)
+void A7105_init(void)
 {
-    init();
+    A7105_reset();
+}
 
-    softuart_puts("Hello, World!\n\r");
-    softuart_puts("Testing connection to A7105... ");
-    if(A7105_test())
-    {
-        softuart_puts("Success! :)\n\r");
-    }
-    else
-    {
-        softuart_puts("Failure! :(\n\r");
-    }
-    while(1)
-    {
-    }
+uint8_t A7105_test(void)
+{
+    A7105_reset();
+    // The clock register (0x0d) should read 0xf5 after reset
+    return(SPI_reg_read(0x0d) == 0xf5);
 }
 
