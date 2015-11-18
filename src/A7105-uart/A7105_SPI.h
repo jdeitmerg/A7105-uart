@@ -33,7 +33,8 @@
 #define SPI_CLK_DDP  DDB1
 
 // The A7105 by default uses the same pin for MISO and MOSI. We'll do that
-// as well.
+// as well. Note that choosing PB0 (== 0!) makes the soft SPI a bit more
+// efficient.
 #define SPI_IO_PORT PORTB
 #define SPI_IO_PIN  PINB
 #define SPI_IO_PP   PB0
@@ -43,7 +44,12 @@
 #define SPI_CSELECT() clearbit(SPI_CS_PORT, SPI_CS_PP)
 #define SPI_CDESELECT() setbit(SPI_CS_PORT, SPI_CS_PP)
 
+#define SPI_CLK_HIGH() setbit(SPI_CLK_PORT, SPI_CLK_PP)
+#define SPI_CLK_LOW() clearbit(SPI_CLK_PORT, SPI_CLK_PP)
+
 void SPI_init(void);
+void SPI_write(uint8_t addr, uint8_t data);
+uint8_t SPI_read(uint8_t addr);
 
 #endif
 
