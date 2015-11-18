@@ -1,7 +1,7 @@
 # A7105 UART Bridge
 
 This project aims at providing a UART interface to a A7105 2.4 GHz wireless
-tranceiver. An Atmel Attiny85 with a soft UART and soft SPI will be used
+tranceiver. An Atmel Attiny85 with a soft UART and soft SPI is used
 for low level communication and some basic abstraction. The current use
 case is programming another chip over the air, so error-free bulk transfers
 are the top priority.
