@@ -20,6 +20,11 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#include <avr/io.h>
+#include <util/delay.h>
+#include <avr/interrupt.h>
+#include <stdint.h>
+
 //Bit operations
 #define setbit(byte, bit) ((byte) |= ((1) << (bit)))
 #define clearbit(byte, bit) ((byte) &= ~((1) << (bit)))

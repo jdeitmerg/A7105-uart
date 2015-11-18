@@ -18,25 +18,32 @@
  */
 
 #include "common.h"
-#include "softuart.h"
-#include "A7105_SPI.h"
 
-void init(void)
-{
-    softuart_init();
-    SPI_init();
-    sei();
-}
+#ifndef A7105_SPI_H
+#define A7105_SPI_H
 
-int main(void)
-{
-    init();
+#define SPI_CS_PORT PORTB
+#define SPI_CS_PP   PB2
+#define SPI_CS_DDR  DDRB
+#define SPI_CS_DDP  DDB2
 
-    softuart_puts("Hello, World!\n\r");
-    while(1)
-    {
-        _delay_ms(1000);
-        softuart_puts("Still working...\n\r");
-    }
-}
+#define SPI_CLK_PORT PORTB
+#define SPI_CLK_PP   PB1
+#define SPI_CLK_DDR  DDRB
+#define SPI_CLK_DDP  DDB1
+
+// The A7105 by default uses the same pin for MISO and MOSI. We'll do that
+// as well.
+#define SPI_IO_PORT PORTB
+#define SPI_IO_PIN  PINB
+#define SPI_IO_PP   PB0
+#define SPI_IO_DDR  DDRB
+#define SPI_IO_DDP  DDB0
+
+#define SPI_CSELECT() clearbit(SPI_CS_PORT, SPI_CS_PP)
+#define SPI_CDESELECT() setbit(SPI_CS_PORT, SPI_CS_PP)
+
+void SPI_init(void);
+
+#endif
 

@@ -17,26 +17,17 @@
  *  along with A7105-uart.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "common.h"
-#include "softuart.h"
 #include "A7105_SPI.h"
 
-void init(void)
+void SPI_init(void)
 {
-    softuart_init();
-    SPI_init();
-    sei();
-}
+    //CS and CLK as outputs
+    setbit(SPI_CS_DDR, SPI_CS_DDP);
+    setbit(SPI_CLK_DDR, SPI_CS_DDP);
 
-int main(void)
-{
-    init();
-
-    softuart_puts("Hello, World!\n\r");
-    while(1)
-    {
-        _delay_ms(1000);
-        softuart_puts("Still working...\n\r");
-    }
+    //CS high by default
+    SPI_CDESELECT();
+    //CLK low by default
+    clearbit(SPI_CLK_PORT, SPI_CLK_PP);
 }
 
