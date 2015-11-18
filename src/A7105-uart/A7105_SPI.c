@@ -31,20 +31,11 @@ static void SPI_bus_write(uint8_t data)
     // shift from the current data bit to the IO bit is dynamically
     // calculated. As negative shifts are not allowed, we have to do this
     // in two loops (and switch the shifting direction in the second).
-    // Note, however, that the first loop will be optimized out, if
+    // Note, however, that the second loop will be optimized out, if
     // SPI_IO_PP equals 0 (see A7015_SPI.h).
     // Splitting the binary operations into understandable instructions
     // would probably make this slow, as all the variables are volatile.
-    for(i = 0; i < SPI_IO_PP; ++i)
-    {
-        SPI_IO_PORT = (SPI_IO_PORT & ~(1 << SPI_IO_PP)) | // clear IO bit
-                      ((data & (1 << i))    // find current address bit
-                       << (SPI_IO_PP - i)); // and shift if from position i
-                                            // to the IO bit position
-        SPI_CLK_HIGH();
-        SPI_CLK_LOW();
-    }
-    for(i = SPI_IO_PP; i < 8; ++i)
+    for(i = 7; i >= SPI_IO_PP; --i)
     {
         SPI_IO_PORT = (SPI_IO_PORT & ~(1 << SPI_IO_PP)) | // clear IO bit
                       ((data & (1 << i))    // find current address bit
@@ -52,6 +43,19 @@ static void SPI_bus_write(uint8_t data)
                                             // to the IO bit position
         SPI_CLK_HIGH();
         SPI_CLK_LOW();
+    }
+    if(SPI_IO_PP > 0)
+    {
+        for(i = SPI_IO_PP - 1; i >= 0; --i)
+        {
+            SPI_IO_PORT =
+                (SPI_IO_PORT & ~(1 << SPI_IO_PP)) | // clear IO bit
+                ((data & (1 << i))    // find current address bit
+                << (SPI_IO_PP - i));  // and shift if from position i
+                                      // to the IO bit position
+            SPI_CLK_HIGH();
+            SPI_CLK_LOW();
+        }
     }
 
     clearbit(SPI_IO_DDR, SPI_IO_DDP);

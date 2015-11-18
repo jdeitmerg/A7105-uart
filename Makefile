@@ -28,15 +28,15 @@ isp_check:
 	avrdude -p $(PG_TARGET) -c $(PG_TYPE) -P $(PG_PORT)
 
 isp_fuses:
-	@# Internal 8MHz Oscillator, don't divide clock by 8, self
-	@# programming enabled
-	@# Extended may read back 0x00!
+# Internal 8MHz Oscillator, don't divide clock by 8, self
+# programming enabled
+# Extended may read back 0x00!
 	avrdude -p $(PG_TARGET) -c $(PG_TYPE) -P $(PG_PORT) -U\
 		lfuse:w:0xe2:m -U hfuse:w:0xdf:m -U efuse:w:0xfe:m
-	@# Internal 8MHz Oscillator, divide clock by 8, self programming
-	@#avrdude -p $(PG_TARGET) -c $(PG_TYPE) -P $(PG_PORT) -U\
-	@#	lfuse:w:0x62:m -U hfuse:w:0xdf:m -U efuse:w:0xfe:m
-	@# Extended may read back 0x00!
+# Internal 8MHz Oscillator, divide clock by 8, self programming
+#	avrdude -p $(PG_TARGET) -c $(PG_TYPE) -P $(PG_PORT) -U\
+#		lfuse:w:0x62:m -U hfuse:w:0xdf:m -U efuse:w:0xfe:m
+# Extended may read back 0x00!
 
 isp_burn: $(BUILD_DIR)/main.elf
 	avrdude -p $(PG_TARGET) -c $(PG_TYPE) -P $(PG_PORT) -U\
@@ -54,7 +54,7 @@ $(BUILD_DIR)/main.hex: $(BUILD_DIR)/main.elf
 $(BUILD_DIR)/main.elf: $(shell ls $(SRC_DIRS)/*.c $(SRC_DIRS)/*.h)
 	@test -d $(BUILD_DIR) || (mkdir $(BUILD_DIR) && echo -e "Created\
 		$(BUILD_DIR)/ directory")
-	@# $(^:%.h=) leaves out all .h files in the list of prequisites
+# $(^:%.h=) leaves out all .h files in the list of prequisites
 	$(CC) $(CC_ARGS) -mmcu=$(MMCU) -o $@ $(^:%.h=)
 
 clean:
