@@ -1,7 +1,7 @@
 CC = avr-gcc
-CC_ARGS = -Wall -O1 -lm
 OBJCOPY = avr-objcopy
 SRC_DIRS = src/{avr-softuart,A7105-uart}
+CC_ARGS = -Wall -O1 -lm -I$(SRC_DIRS)
 BUILD_DIR = bin
 
 # For In-System-Programming:
