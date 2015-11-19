@@ -70,23 +70,26 @@ static uint8_t SPI_bus_read(void)
     // Assume MISO/MOSI is input (SPI_bus_write should leave it as that)
 
     // Analogous to SPI_bus_write()
-    for(i = 0; i < SPI_IO_PP; ++i)
-    {
-        data |= (SPI_IO_PIN & (1 << SPI_IO_PP)) //slect IO bit
-                >> (SPI_IO_PP - i);         //and shift it to position i
-
-        SPI_CLK_HIGH();
-        SPI_CLK_LOW();
-    }
-    for(i = SPI_IO_PP; i < 8; ++i)
+    for(i = 7; i >= SPI_IO_PP; --i)
     {
         data |= (SPI_IO_PIN & (1 << SPI_IO_PP)) //slect IO bit
                 << (i - SPI_IO_PP);         //and shift it to position i
 
-        // We're pulsing the clock once too often, but that shouldn't
-        // matter.
         SPI_CLK_HIGH();
         SPI_CLK_LOW();
+    }
+    if(SPI_IO_PP > 0)
+    {
+        for(i = SPI_IO_PP-1; i >= 0; --i)
+        {
+            data |= (SPI_IO_PIN & (1 << SPI_IO_PP)) //slect IO bit
+                    >> (SPI_IO_PP - i);     //and shift it to position i
+
+            // We're pulsing the clock once too often, but that shouldn't
+            // matter.
+            SPI_CLK_HIGH();
+            SPI_CLK_LOW();
+        }
     }
 
     return(data);
