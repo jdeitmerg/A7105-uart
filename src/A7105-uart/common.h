@@ -24,6 +24,7 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include <stdint.h>
+#include <stdio.h>
 
 //Bit operations
 #define setbit(byte, bit) ((byte) |= ((1) << (bit)))

@@ -22,11 +22,34 @@
 #include "A7105_SPI.h"
 #include "A7105.h"
 
+// Similar to glibc example
+int uart_putchar(char c, FILE* stream)
+{
+    if (c == '\n')
+    {
+        uart_putchar('\r', stream);
+    }
+    softuart_putchar(c);
+    return 0;
+}
+
+int uart_getchar(FILE *stream) {
+    return(softuart_getchar());
+}
+
+static FILE uart_stream = FDEV_SETUP_STREAM(uart_putchar, uart_getchar,
+                                             _FDEV_SETUP_RW);
+
 void init(void)
 {
     softuart_init();
     SPI_init();
     A7105_init();
+
+    // for printf and friends
+    stdout = &uart_stream;
+    stdin = &uart_stream;
+
     sei();
 }
 
@@ -34,15 +57,15 @@ int main(void)
 {
     init();
 
-    softuart_puts("Hello, World!\n\r");
-    softuart_puts("Testing connection to A7105... ");
+    printf("Hello, World!\n");
+    printf("Testing connection to A7105... ");
     if(A7105_test())
     {
-        softuart_puts("Success! :)\n\r");
+        printf("Success! :)\n");
     }
     else
     {
-        softuart_puts("Failure! :(\n\r");
+        printf("Failure! :(\n");
     }
     while(1)
     {

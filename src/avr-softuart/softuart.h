@@ -3,7 +3,7 @@
     #define F_CPU 3686400UL
 #endif
 
-#define SOFTUART_BAUD_RATE      9600
+#define SOFTUART_BAUD_RATE      4800
 
 #if defined (__AVR_ATtiny25__) || defined (__AVR_ATtiny45__) || defined (__AVR_ATtiny85__)
     #define SOFTUART_RXPIN   PINB
