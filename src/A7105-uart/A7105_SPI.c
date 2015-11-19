@@ -22,7 +22,7 @@
 static void SPI_bus_write(uint8_t data)
 // Writes the byte data to the SPI bus.
 {
-    uint8_t i;
+    int8_t i;
 
     // Make MISO/MOSI output only for the duration of this function
     setbit(SPI_IO_DDR, SPI_IO_DDP);
@@ -64,7 +64,7 @@ static void SPI_bus_write(uint8_t data)
 static uint8_t SPI_bus_read(void)
 // Reads a single byte from the SPI bus.
 {
-    uint8_t i;
+    int8_t i;
     uint8_t data = 0;
 
     // Assume MISO/MOSI is input (SPI_bus_write should leave it as that)
