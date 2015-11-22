@@ -23,7 +23,6 @@
 void A7105_reset(void)
 {
     SPI_reg_write(0x00, 0x00);
-    _delay_us(100); //probably a waste of time
 }
 
 void A7105_init(void)

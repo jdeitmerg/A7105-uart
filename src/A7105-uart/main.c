@@ -27,7 +27,7 @@ int uart_putchar(char c, FILE* stream)
 {
     if (c == '\n')
     {
-        uart_putchar('\r', stream);
+        softuart_putchar('\r');
     }
     softuart_putchar(c);
     return 0;
@@ -57,7 +57,6 @@ int main(void)
 {
     init();
 
-    printf("Hello, World!\n");
     printf("Testing connection to A7105... ");
     if(A7105_test())
     {
