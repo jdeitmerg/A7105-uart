@@ -131,7 +131,7 @@ void SPI_init(void)
 {
     // CS and CLK as outputs
     setbit(SPI_CS_DDR, SPI_CS_DDP);
-    setbit(SPI_CLK_DDR, SPI_CS_DDP);
+    setbit(SPI_CLK_DDR, SPI_CLK_DDP);
     // MOSI/MISO shall be input as often as possible
     clearbit(SPI_IO_DDR, SPI_IO_DDP);
 
