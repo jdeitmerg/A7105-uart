@@ -124,7 +124,8 @@ void SPI_reg_write(uint8_t reg, uint8_t data)
 
 uint8_t SPI_reg_read(uint8_t reg)
 {
-    return(SPI_read(reg & 0x3f));
+    // Don't forget register read bit (bit 6 -> 0x40)
+    return(SPI_read((reg & 0x3f) | 0x40));
 }
 
 void SPI_init(void)
