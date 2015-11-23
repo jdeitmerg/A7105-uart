@@ -54,7 +54,7 @@ int8_t init(void)
 
 int main(void)
 {
-    if(init() != 0);
+    if(init() != 0)
     {
         printf("\n\nInit failed!\n");
         while(1);
