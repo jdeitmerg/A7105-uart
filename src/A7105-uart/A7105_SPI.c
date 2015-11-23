@@ -17,6 +17,10 @@
  *  along with A7105-uart.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* This file contains a software implementation (bitbang FTW) of the 3-wire
+ * SPI used by the A7105.
+ */
+
 #include "A7105_SPI.h"
 
 static void SPI_bus_write(uint8_t data)

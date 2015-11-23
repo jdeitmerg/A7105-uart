@@ -22,7 +22,7 @@
 
 void A7105_reset(void)
 {
-    SPI_reg_write(0x00, 0x00);
+    SPI_reg_write(A7105_reg_mode, 0x00);
 }
 
 void A7105_init(void)
@@ -33,7 +33,7 @@ void A7105_init(void)
 uint8_t A7105_test(void)
 {
     A7105_reset();
-    // The clock register (0x0d) should read 0xf5 after reset
-    return(SPI_reg_read(0x0d) == 0xf5);
+    // The clock register should read 0xf5 after reset
+    return(SPI_reg_read(A7105_reg_clock) == 0xf5);
 }
 

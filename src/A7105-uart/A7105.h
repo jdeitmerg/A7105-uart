@@ -22,6 +22,60 @@
 
 #include "common.h"
 
+enum A7105_reg {
+    A7105_reg_mode = 0x00,
+    A7105_reg_mode_control,   //0x01
+    A7105_reg_calc,           //0x02
+    A7105_reg_FIFOI,          //0x03
+    A7105_reg_FIFOII,         //0x04
+    A7105_reg_FIFO_data,      //0x05
+    A7105_reg_ID,             //0x06
+    A7105_reg_OSCI,           //0x07
+    A7105_reg_OSCII,          //0x08
+    A7105_reg_OSCIII,         //0x09
+    A7105_reg_CKO,            //0x0a
+    A7105_reg_GPIOI,          //0x0b
+    A7105_reg_GPIOII,         //0x0c
+    A7105_reg_clock,          //0x0d
+    A7105_reg_data_rate,      //0x0e
+    A7105_reg_PLLI,           //0x0f
+    A7105_reg_PLLII,          //0x10
+    A7105_reg_PLLIII,         //0x11
+    A7105_reg_PLLIV,          //0x12
+    A7105_reg_PLLV,           //0x13
+    A7105_reg_TXI,            //0x14
+    A7105_reg_TXII,           //0x15
+    A7105_reg_delayI,         //0x16
+    A7105_reg_delayII,        //0x17
+    A7105_reg_RX,             //0x18
+    A7105_reg_RX_gainI,       //0x19
+    A7105_reg_RX_gainII,      //0x1a
+    A7105_reg_RX_gainIII,     //0x1b
+    A7105_reg_RX_gainIV,      //0x1c
+    A7105_reg_RSSI_thres,     //0x1d
+    A7105_reg_ADC,            //0x1e
+    A7105_reg_codeI,          //0x1f
+    A7105_reg_codeII,         //0x20
+    A7105_reg_codeIII,        //0x21
+    A7105_reg_IF_calibI,      //0x22
+    A7105_reg_IF_calibII,     //0x23
+    A7105_reg_VCO_c_calib,    //0x24
+    A7105_reg_VCO_sb_calibI,  //0x25
+    A7105_reg_VCO_sb_calibII, //0x26
+    A7105_reg_battery,        //0x27
+    A7105_reg_TX_test,        //0x28
+    A7105_reg_RX_testI,       //0x29
+    A7105_reg_RX_testII,      //0x2a
+    A7105_reg_CPC,            //0x2b
+    A7105_reg_crystal_test,   //0x2c
+    A7105_reg_PLL_test,       //0x2d
+    A7105_reg_VCO_testI,      //0x2e
+    A7105_reg_VCO_testII,     //0x2f
+    A7105_reg_IFAT,           //0x30
+    A7105_reg_R_scale,        //0x31
+    A7105_reg_filter_test,    //0x32
+};
+
 void A7105_reset(void);
 void A7105_init(void);
 uint8_t A7105_test(void);
