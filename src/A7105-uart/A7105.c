@@ -46,7 +46,7 @@ static uint8_t calib_VCO_bank(void)
             // VCO current calib not done after 1000us
             // Disable timer
             TCCR1 = 0x00;
-            return(0x10);
+            return(0x01);
         }
         if(!testbit(SPI_reg_read(A7105_reg_calib), 1))
         {
@@ -60,7 +60,7 @@ static uint8_t calib_VCO_bank(void)
     if(testbit(SPI_reg_read(A7105_reg_VCO_sb_calibI), 3))
     {
         // VCO bank calib not successful
-        return(0x11);
+        return(0x02);
     }
 
     return(0);
@@ -85,7 +85,7 @@ static uint8_t calib_VCO_current(void)
             // VCO current calib not done after 1000us
             // Disable timer
             TCCR1 = 0x00;
-            return(-0x20);
+            return(0x04);
         }
         if(!testbit(SPI_reg_read(A7105_reg_calib), 2))
         {
@@ -99,7 +99,7 @@ static uint8_t calib_VCO_current(void)
     if(testbit(SPI_reg_read(A7105_reg_VCO_c_calib), 4))
     {
         // VCO current calib not successful
-        return(-0x21);
+        return(0x08);
     }
 
     return(0);
@@ -124,7 +124,7 @@ static uint8_t calib_filter_bank(void)
             // IF calib not done after 1000us
             // Disable timer
             TCCR1 = 0x00;
-            return(0x30);
+            return(0x10);
         }
         if(!testbit(SPI_reg_read(A7105_reg_calib), 0))
         {
@@ -138,7 +138,7 @@ static uint8_t calib_filter_bank(void)
     if(testbit(SPI_reg_read(A7105_reg_IF_calibI), 4))
     {
         // IF calib not successful
-        return(0x31);
+        return(0x20);
     }
 
     return(0);
@@ -149,18 +149,9 @@ uint8_t calib_all(void)
     uint8_t retval;
 
     retval = calib_VCO_bank();
-    if(retval != 0)
-    {
-        return(retval);
-    }
+    retval |= calib_VCO_current();
+    retval |= calib_filter_bank();
 
-    retval = calib_VCO_current();
-    if(retval != 0)
-    {
-        return(retval);
-    }
-
-    retval = calib_filter_bank();
     return(retval);
 }
 

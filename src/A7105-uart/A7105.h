@@ -96,15 +96,13 @@ void A7105_reset(void);
  *       this function is run and reconfigure it afterwards.
  * Returns:
  *  0       on success
- *  0x1*    if VCO bank could not be calibrated
- *    0x10    if calib not done after 1000us
- *    0x11    if calib not successful
- *  0x2*    if VCO current could not be calibrated
- *    0x20    if calib not done after 1000us
- *    0x21    if calib not successful
- *  0x3*    if IF filter bank could not be calibrated
- *    0x30    if calib not done after 1000us
- *    0x31    if calib not successful
+ *  The ored combination of the following values:
+ *    0x01  if VCO bank calibration took more than 1000us
+ *    0x02  if VCO bank calibration was not successful
+ *    0x04  if VCO current calibration took more than 1000us
+ *    0x08  if VCO current calibration was not successful
+ *    0x10  if IF filter bank calibration took more than 1000us
+ *    0x20  if IF filter bank calibration was not successful
  */
 uint8_t calib_all(void);
 
