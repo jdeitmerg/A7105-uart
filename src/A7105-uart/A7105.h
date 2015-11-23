@@ -1,7 +1,7 @@
 /*
  *  This file is part of A7105-uart, a UART interface to the A7105 wireless
  *  tranceiver.
- *  Copyright (C) 2015 J.Deitmerg <github.com/mowfask>
+ *  Copyright (C) 2015 J.Deitmerg <mowfask@gmail.com>
  *
  *  A7105-uart is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
