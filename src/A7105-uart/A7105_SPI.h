@@ -51,6 +51,8 @@ void SPI_init(void);
 void SPI_single_write(uint8_t data);
 void SPI_reg_write(uint8_t addr, uint8_t data);
 uint8_t SPI_reg_read(uint8_t addr);
+void SPI_reg_multi_read(uint8_t reg, uint8_t *buf, uint8_t len);
+void SPI_reg_multi_write(uint8_t reg, uint8_t *buf, uint8_t len)
 
 #endif
 

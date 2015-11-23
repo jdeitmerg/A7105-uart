@@ -134,6 +134,45 @@ uint8_t SPI_reg_read(uint8_t reg)
     return(data);
 }
 
+void SPI_reg_multi_write(uint8_t reg, uint8_t *buf, uint8_t len)
+/* Write len bytes from buf into register reg.
+ */
+{
+    uint8_t i;
+
+    reg &= 0x3f;
+    SPI_CSELECT();
+    SPI_bus_write(reg);
+
+    for(i = 0; i < len; ++i)
+    {
+        SPI_bus_write(buf[i]);
+    }
+
+    SPI_CDESELECT();
+}
+
+void SPI_reg_multi_read(uint8_t reg, uint8_t *buf, uint8_t len)
+/* Read len bytes from register reg into buf
+ */
+{
+    uint8_t i;
+
+    // Don't forget register read bit (bit 6 -> 0x40)
+    reg &= 0x3f;
+    reg |= 0x40;
+    SPI_CSELECT();
+    SPI_bus_write(reg);
+
+    for(i = 0; i < len; ++i)
+    {
+        buf[i] = SPI_bus_read();
+    }
+
+    SPI_CDESELECT();
+
+}
+
 void SPI_init(void)
 {
     // CS and CLK as outputs
