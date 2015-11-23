@@ -25,7 +25,7 @@
 enum A7105_reg {
     A7105_reg_mode = 0x00,
     A7105_reg_mode_control,   //0x01
-    A7105_reg_calc,           //0x02
+    A7105_reg_calib,          //0x02
     A7105_reg_FIFOI,          //0x03
     A7105_reg_FIFOII,         //0x04
     A7105_reg_FIFO_data,      //0x05
@@ -88,7 +88,17 @@ enum A7105_strobe {
 };
 
 void A7105_reset(void);
-void A7105_init(void);
+
+/* Note: Timer 1 is used to measure calibration times during init. Make
+ * sure it's not used before this function has run.
+ * Returns:
+ *  0       on success
+ *  -0x1*   if IF filter bank could not be calibrated
+ *    -0x10   if calib not done after 1000us
+ *    -0x11   if calib not successful
+ */
+int8_t A7105_init(void);
+
 uint8_t A7105_test(void);
 
 #endif

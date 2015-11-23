@@ -40,22 +40,25 @@ int uart_getchar(FILE *stream) {
 static FILE uart_stream = FDEV_SETUP_STREAM(uart_putchar, uart_getchar,
                                              _FDEV_SETUP_RW);
 
-void init(void)
+int8_t init(void)
 {
     softuart_init();
-    SPI_init();
-    A7105_init();
-
     // for printf and friends
     stdout = &uart_stream;
     stdin = &uart_stream;
-
     sei();
+
+    SPI_init();
+    return(A7105_init());
 }
 
 int main(void)
 {
-    init();
+    if(init() != 0);
+    {
+        printf("\n\nInit failed!\n");
+        while(1);
+    }
 
     printf("Testing connection to A7105... ");
     if(A7105_test())
