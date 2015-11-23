@@ -99,7 +99,5 @@ void A7105_reset(void);
  */
 int8_t A7105_init(void);
 
-uint8_t A7105_test(void);
-
 #endif
 

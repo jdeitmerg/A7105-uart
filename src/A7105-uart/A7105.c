@@ -85,10 +85,3 @@ int8_t A7105_init(void)
     return(0);
 }
 
-uint8_t A7105_test(void)
-{
-    A7105_reset();
-    // The clock register should read 0xf5 after reset
-    return(SPI_reg_read(A7105_reg_clock) == 0xf5);
-}
-

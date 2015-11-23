@@ -60,15 +60,7 @@ int main(void)
         while(1);
     }
 
-    printf("Testing connection to A7105... ");
-    if(A7105_test())
-    {
-        printf("Success! :)\n");
-    }
-    else
-    {
-        printf("Failure! :(\n");
-    }
+    printf("\n\nA7105 initialized successfully!\n");
     while(1)
     {
     }
