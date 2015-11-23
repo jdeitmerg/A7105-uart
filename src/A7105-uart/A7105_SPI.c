@@ -99,37 +99,39 @@ static uint8_t SPI_bus_read(void)
     return(data);
 }
 
-static void SPI_write(uint8_t addr, uint8_t data)
+void SPI_single_write(uint8_t data)
 {
     SPI_CSELECT();
-    SPI_bus_write(addr);
     SPI_bus_write(data);
     SPI_CDESELECT();
-}
-
-static uint8_t SPI_read(uint8_t addr)
-{
-    uint8_t data;
-
-    SPI_CSELECT();
-    SPI_bus_write(addr);
-    data = SPI_bus_read();
-    SPI_CDESELECT();
-
-    return(data);
 }
 
 void SPI_reg_write(uint8_t reg, uint8_t data)
 {
     // Address byte[7]: Control registers (0) or strobe command(1)
     // Address byte[6]: Write to (0) or read from (1) control register
-    SPI_write(reg & 0x3f, data);
+    reg &= 0x3f;
+
+    SPI_CSELECT();
+    SPI_bus_write(reg);
+    SPI_bus_write(data);
+    SPI_CDESELECT();
 }
 
 uint8_t SPI_reg_read(uint8_t reg)
 {
+    uint8_t data;
+
     // Don't forget register read bit (bit 6 -> 0x40)
-    return(SPI_read((reg & 0x3f) | 0x40));
+    reg &= 0x3f;
+    reg |= 0x40;
+
+    SPI_CSELECT();
+    SPI_bus_write(reg);
+    data = SPI_bus_read();
+    SPI_CDESELECT();
+
+    return(data);
 }
 
 void SPI_init(void)

@@ -73,7 +73,18 @@ enum A7105_reg {
     A7105_reg_VCO_testII,     //0x2f
     A7105_reg_IFAT,           //0x30
     A7105_reg_R_scale,        //0x31
-    A7105_reg_filter_test,    //0x32
+    A7105_reg_filter_test     //0x32
+};
+
+enum A7105_strobe {
+    A7105_strobe_sleep       = 0x80,
+    A7105_strobe_idle        = 0x90,
+    A7105_strobe_standby     = 0xa0,
+    A7105_strobe_PLL         = 0xb0,
+    A7105_strobe_RX          = 0xc0,
+    A7105_strobe_TX          = 0xd0,
+    A7105_strobe_write_reset = 0xe0,
+    A7105_strobe_read_reset  = 0xf0
 };
 
 void A7105_reset(void);

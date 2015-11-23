@@ -48,6 +48,7 @@
 #define SPI_CLK_LOW() clearbit(SPI_CLK_PORT, SPI_CLK_PP)
 
 void SPI_init(void);
+void SPI_single_write(uint8_t data);
 void SPI_reg_write(uint8_t addr, uint8_t data);
 uint8_t SPI_reg_read(uint8_t addr);
 
