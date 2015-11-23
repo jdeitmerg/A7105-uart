@@ -38,7 +38,7 @@ enum A7105_reg {
     A7105_reg_GPIOII,         //0x0c
     A7105_reg_clock,          //0x0d
     A7105_reg_data_rate,      //0x0e
-    A7105_reg_PLLI,           //0x0f
+    A7105_reg_channel,        //0x0f
     A7105_reg_PLLII,          //0x10
     A7105_reg_PLLIII,         //0x11
     A7105_reg_PLLIV,          //0x12
@@ -89,15 +89,26 @@ enum A7105_strobe {
 
 void A7105_reset(void);
 
-/* Note: Timer 1 is used to measure calibration times during init. Make
- * sure it's not used before this function has run.
+/* calib_all: Perform 3 calibrations as in chapter 15 of datasheet.
+ *            Should be performed when everything is set up (to the point
+ *            that a channel is selected).
+ * Note: Timer 1 is used during calibration. Make sure it's not used when
+ *       this function is run and reconfigure it afterwards.
  * Returns:
  *  0       on success
- *  -0x1*   if IF filter bank could not be calibrated
- *    -0x10   if calib not done after 1000us
- *    -0x11   if calib not successful
+ *  0x1*    if VCO bank could not be calibrated
+ *    0x10    if calib not done after 1000us
+ *    0x11    if calib not successful
+ *  0x2*    if VCO current could not be calibrated
+ *    0x20    if calib not done after 1000us
+ *    0x21    if calib not successful
+ *  0x3*    if IF filter bank could not be calibrated
+ *    0x30    if calib not done after 1000us
+ *    0x31    if calib not successful
  */
-int8_t A7105_init(void);
+uint8_t calib_all(void);
+
+void A7105_init(void);
 
 #endif
 

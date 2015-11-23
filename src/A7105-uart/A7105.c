@@ -25,7 +25,146 @@ void A7105_reset(void)
     SPI_reg_write(A7105_reg_mode, 0x00);
 }
 
-int8_t A7105_init(void)
+static uint8_t calib_VCO_bank(void)
+{
+    // Prescale the 8MHz clock by 64, so we get 8us ticks
+    TCCR1 = (1 << CS10) | (1 << CS11) | (1 << CS12);
+
+    // Assume MVBS == 0 after reset
+    SPI_single_write(A7105_strobe_PLL);
+    // We'll leave VTH and VTL at their recommended values.
+
+    // Set VBC bit to start calibration
+    SPI_reg_write(A7105_reg_calib, 0x02);
+
+    TCNT1 = 0;
+    // Poll VBC bit
+    while(1)
+    {
+        if(TCNT1 > 125)
+        {
+            // VCO current calib not done after 1000us
+            // Disable timer
+            TCCR1 = 0x00;
+            return(0x10);
+        }
+        if(!testbit(SPI_reg_read(A7105_reg_calib), 1))
+        {
+            // VCO bank calib done
+            break;
+        }
+    }
+    // Disable timer
+    TCCR1 = 0x00;
+    // VBCF bit: Indicates calib failure
+    if(testbit(SPI_reg_read(A7105_reg_VCO_sb_calibI), 3))
+    {
+        // VCO bank calib not successful
+        return(0x11);
+    }
+
+    return(0);
+}
+
+static uint8_t calib_VCO_current(void)
+{
+    // Prescale the 8MHz clock by 64, so we get 8us ticks
+    TCCR1 = (1 << CS10) | (1 << CS11) | (1 << CS12);
+
+    // Assume MVCS == 0 after reset
+    SPI_single_write(A7105_strobe_PLL);
+    // Set VCC bit to start calibration
+    SPI_reg_write(A7105_reg_calib, 0x04);
+
+    TCNT1 = 0;
+    // Poll VCC bit
+    while(1)
+    {
+        if(TCNT1 > 125)
+        {
+            // VCO current calib not done after 1000us
+            // Disable timer
+            TCCR1 = 0x00;
+            return(-0x20);
+        }
+        if(!testbit(SPI_reg_read(A7105_reg_calib), 2))
+        {
+            // VCO current calib done
+            break;
+        }
+    }
+    // Disable timer
+    TCCR1 = 0x00;
+    // FVCC bit: Indicates calib failure
+    if(testbit(SPI_reg_read(A7105_reg_VCO_c_calib), 4))
+    {
+        // VCO current calib not successful
+        return(-0x21);
+    }
+
+    return(0);
+}
+
+static uint8_t calib_filter_bank(void)
+{
+    // Prescale the 8MHz clock by 64, so we get 8us ticks
+    TCCR1 = (1 << CS10) | (1 << CS11) | (1 << CS12);
+
+    // Assume MFBS == 0 after reset
+    SPI_single_write(A7105_strobe_PLL);
+    // Set FBC bit to start calibration
+    SPI_reg_write(A7105_reg_calib, 0x01);
+
+    TCNT1 = 0;
+    // Poll FBC bit
+    while(1)
+    {
+        if(TCNT1 > 125)
+        {
+            // IF calib not done after 1000us
+            // Disable timer
+            TCCR1 = 0x00;
+            return(0x30);
+        }
+        if(!testbit(SPI_reg_read(A7105_reg_calib), 0))
+        {
+            // IF calib done
+            break;
+        }
+    }
+    // Disable timer
+    TCCR1 = 0x00;
+    // FBCF bit: Indicates calib failure
+    if(testbit(SPI_reg_read(A7105_reg_IF_calibI), 4))
+    {
+        // IF calib not successful
+        return(0x31);
+    }
+
+    return(0);
+}
+
+uint8_t calib_all(void)
+{
+    uint8_t retval;
+
+    retval = calib_VCO_bank();
+    if(retval != 0)
+    {
+        return(retval);
+    }
+
+    retval = calib_VCO_current();
+    if(retval != 0)
+    {
+        return(retval);
+    }
+
+    retval = calib_filter_bank();
+    return(retval);
+}
+
+void A7105_init(void)
 {
     A7105_reset();
     // After reset 16MHz crystal and 500Kbps data rate are already
@@ -49,39 +188,5 @@ int8_t A7105_init(void)
     SPI_reg_write(A7105_reg_codeII, 0x4 | (0x1 << 4) | 0x2);
     // Demodulator DC estimation mode: Average and hold (0x2)
     SPI_reg_write(A7105_reg_RX_testI, 0x07 | (0x2 << 5));
-
-    // For measuring time:
-    // Prescale the 8MHz clock by 64, so we get 8us ticks
-    TCCR1 = (1 << CS10) | (1 << CS11) | (1 << CS12);
-
-    /* IF filter bank calibration
-     */
-    // Assume MFBS == 0 after reset
-    SPI_single_write(A7105_strobe_PLL);
-    // Set FBC bit
-    SPI_reg_write(A7105_reg_calib, 0x01);
-
-    TCNT1 = 0;
-    // Poll FBC bit
-    while(1)
-    {
-        if(TCNT1 > 125)
-        {
-            // IF calib not done after 1000us
-            return(-0x10);
-        }
-        if(!testbit(SPI_reg_read(A7105_reg_calib), 0))
-        {
-            // IF calib done
-            break;
-        }
-    }
-    if(testbit(SPI_reg_read(A7105_reg_IF_calibI), 4))
-    {
-        // IF calib not successful
-        return(-0x11);
-    }
-
-    return(0);
 }
 
