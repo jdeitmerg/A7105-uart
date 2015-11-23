@@ -7,7 +7,7 @@ case is programming another chip over the air, so error-free bulk transfers
 are the top priority.
 
 ## Status
-The soft UART works.
+The soft UART and SPI work.
 
 ## Attributions
 For the soft UART, [**avr-softuart** by Brian Lalor
