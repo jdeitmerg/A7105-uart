@@ -108,5 +108,13 @@ uint8_t calib_all(void);
 
 void A7105_init(void);
 
+/* ID read and write functions:
+ * Read or write the 32 bit ID. The most significant bit is read/written
+ * first. With the recommended values for byte 0 the ID pattern should
+ * therefore be 0x5******* or 0xA*******.
+ */
+uint32_t A7105_ID_read(void);
+void A7105_ID_write(uint32_t ID);
+
 #endif
 

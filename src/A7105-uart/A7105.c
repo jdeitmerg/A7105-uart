@@ -181,3 +181,32 @@ void A7105_init(void)
     SPI_reg_write(A7105_reg_RX_testI, 0x07 | (0x2 << 5));
 }
 
+uint32_t A7105_ID_read(void)
+{
+    uint32_t ID;
+    uint8_t idbytes[4];
+
+    // We could read this straight into ID, but the result would depend on
+    // the endiness of the architecture.
+    SPI_reg_multi_read(A7105_reg_ID, idbytes, 4);
+
+    ID  = (uint32_t) idbytes[0] << 24;
+    ID |= (uint32_t) idbytes[1] << 16;
+    ID |= (uint32_t) idbytes[2] << 8;
+    ID |= (uint32_t) idbytes[3] << 0;
+
+    return(ID);
+}
+
+void A7105_ID_write(uint32_t ID)
+{
+    uint8_t idbytes[4];
+
+    idbytes[0] = ID >> 24;
+    idbytes[1] = ID >> 16;
+    idbytes[2] = ID >> 8;
+    idbytes[3] = ID >> 0;
+
+    SPI_reg_multi_write(A7105_reg_ID, idbytes, 4);
+}
+

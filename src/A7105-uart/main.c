@@ -57,6 +57,12 @@ int main(void)
     init();
 
     printf("\n\nA7105 initialized successfully!\n");
+
+    printf("ID after reset: %x\n", A7105_ID_read());
+    printf("Writing ID 0xabcdef12...\n\n");
+    A7105_ID_write(0xabcdef12);
+    printf("Reading back: %lx\n", A7105_ID_read());
+
     while(1)
     {
     }
