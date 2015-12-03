@@ -25,132 +25,62 @@ void A7105_reset(void)
     SPI_reg_write(A7105_reg_mode, 0x00);
 }
 
-static uint8_t calib_VCO_bank(void)
+uint8_t A7105_calib(void)
 {
-    // Prescale the 8MHz clock by 64, so we get 8us ticks
-    TCCR1 = (1 << CS10) | (1 << CS11) | (1 << CS12);
-
-    // Assume MVBS == 0 after reset
-    SPI_single_write(A7105_strobe_PLL);
-    // We'll leave VTH and VTL at their recommended values.
-
-    // Set VBC bit to start calibration
-    SPI_reg_write(A7105_reg_calib, 0x02);
-
-    TCNT1 = 0;
-    // Poll VBC bit
-    while(1)
-    {
-        if(TCNT1 > 125)
-        {
-            // VCO current calib not done after 1000us
-            // Disable timer
-            TCCR1 = 0x00;
-            return(0x01);
-        }
-        if(!testbit(SPI_reg_read(A7105_reg_calib), 1))
-        {
-            // VCO bank calib done
-            break;
-        }
-    }
-    // Disable timer
-    TCCR1 = 0x00;
-    // VBCF bit: Indicates calib failure
-    if(testbit(SPI_reg_read(A7105_reg_VCO_sb_calibI), 3))
-    {
-        // VCO bank calib not successful
-        return(0x02);
-    }
-
-    return(0);
-}
-
-static uint8_t calib_VCO_current(void)
-{
-    // Prescale the 8MHz clock by 64, so we get 8us ticks
-    TCCR1 = (1 << CS10) | (1 << CS11) | (1 << CS12);
-
-    // Assume MVCS == 0 after reset
-    SPI_single_write(A7105_strobe_PLL);
-    // Set VCC bit to start calibration
-    SPI_reg_write(A7105_reg_calib, 0x04);
-
-    TCNT1 = 0;
-    // Poll VCC bit
-    while(1)
-    {
-        if(TCNT1 > 125)
-        {
-            // VCO current calib not done after 1000us
-            // Disable timer
-            TCCR1 = 0x00;
-            return(0x04);
-        }
-        if(!testbit(SPI_reg_read(A7105_reg_calib), 2))
-        {
-            // VCO current calib done
-            break;
-        }
-    }
-    // Disable timer
-    TCCR1 = 0x00;
-    // FVCC bit: Indicates calib failure
-    if(testbit(SPI_reg_read(A7105_reg_VCO_c_calib), 4))
-    {
-        // VCO current calib not successful
-        return(0x08);
-    }
-
-    return(0);
-}
-
-static uint8_t calib_filter_bank(void)
-{
-    // Prescale the 8MHz clock by 64, so we get 8us ticks
-    TCCR1 = (1 << CS10) | (1 << CS11) | (1 << CS12);
+    uint8_t retval = 0;
+    uint8_t calibreg;
 
     // Assume MFBS == 0 after reset
     SPI_single_write(A7105_strobe_PLL);
-    // Set FBC bit to start calibration
-    SPI_reg_write(A7105_reg_calib, 0x01);
+    // Start filter bank (FBC, bit 0), VCO current (VCC, bit 2) and VCO
+    // bank (VBC, bit 1) calibrations all at the same time.
+    // Leave VTH and VTL at recommended values.
+    SPI_reg_write(A7105_reg_calib, 0x07);
 
-    TCNT1 = 0;
-    // Poll FBC bit
-    while(1)
+    // We could poll the end of the calibration and use a timer to determine
+    // if it takes too long. That's not easily portable, so we waste some
+    // time instead.
+    _delay_us(1000);
+
+    calibreg = SPI_reg_read(A7105_reg_calib);
+
+    // Check calibration timeouts
+    if(testbit(calibreg, 0))
     {
-        if(TCNT1 > 125)
-        {
-            // IF calib not done after 1000us
-            // Disable timer
-            TCCR1 = 0x00;
-            return(0x10);
-        }
-        if(!testbit(SPI_reg_read(A7105_reg_calib), 0))
-        {
-            // IF calib done
-            break;
-        }
+        // IF filter bank calibration took too long
+        retval |= 0x10;
     }
-    // Disable timer
-    TCCR1 = 0x00;
+    if(testbit(calibreg, 1))
+    {
+        // VCO bank calibration took too long
+        retval |= 0x01;
+    }
+    if(testbit(calibreg, 2))
+    {
+        // VCO current calibration took too long
+        retval |= 0x04;
+    }
+
+    // Check calibration success
     // FBCF bit: Indicates calib failure
     if(testbit(SPI_reg_read(A7105_reg_IF_calibI), 4))
     {
         // IF calib not successful
-        return(0x20);
+        retval |= 0x20;
     }
 
-    return(0);
-}
-
-uint8_t calib_all(void)
-{
-    uint8_t retval;
-
-    retval = calib_VCO_bank();
-    retval |= calib_VCO_current();
-    retval |= calib_filter_bank();
+    // VBCF bit: Indicates calib failure
+    if(testbit(SPI_reg_read(A7105_reg_VCO_sb_calibI), 3))
+    {
+        // VCO bank calibration not successful
+        retval |= 0x02;
+    }
+    // FVCC bit: Indicates calib failure
+    if(testbit(SPI_reg_read(A7105_reg_VCO_c_calib), 4))
+    {
+        // VCO current calib not successful
+        retval |= 0x08;
+    }
 
     SPI_single_write(A7105_strobe_standby);
 
@@ -182,6 +112,9 @@ void A7105_init(void)
     SPI_reg_write(A7105_reg_codeII, 0x4 | (0x1 << 4) | 0x2);
     // Demodulator DC estimation mode: Average and hold (0x2)
     SPI_reg_write(A7105_reg_RX_testI, 0x07 | (0x2 << 5));
+    // Enable auto IF offset (shift frequency while receiving) and FIFO
+    // mode
+    SPI_reg_write(A7105_reg_mode_control, (1 << 5) | (1 << 1));
 }
 
 uint32_t A7105_ID_read(void)

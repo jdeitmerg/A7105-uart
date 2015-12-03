@@ -89,11 +89,9 @@ enum A7105_strobe {
 
 void A7105_reset(void);
 
-/* calib_all: Perform 3 calibrations as in chapter 15 of datasheet.
- *            Should be performed when everything is set up (to the point
- *            that a channel is selected).
- * Note: Timer 1 is used during calibration. Make sure it's not used when
- *       this function is run and reconfigure it afterwards.
+/* A7105_calib: Perform 3 calibrations as in chapter 15 of datasheet.
+ *              Should be performed when everything is set up (to the point
+ *              that a channel is selected).
  * Returns:
  *  0       on success
  *  The ored combination of the following values:
@@ -104,7 +102,7 @@ void A7105_reset(void);
  *    0x10  if IF filter bank calibration took more than 1000us
  *    0x20  if IF filter bank calibration was not successful
  */
-uint8_t calib_all(void);
+uint8_t A7105_calib(void);
 
 void A7105_init(void);
 
