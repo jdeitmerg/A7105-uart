@@ -115,6 +115,10 @@ void A7105_init(void)
     // Enable auto IF offset (shift frequency while receiving) and FIFO
     // mode
     SPI_reg_write(A7105_reg_mode_control, (1 << 5) | (1 << 1));
+    // Set BPF bandwidth to 500KHz (bits 6 and 5 shall always be set to 1)
+    // Although it always reads 0, we assume 500KHz is already selected
+    // after reset.
+    // SPI_reg_write(A7105_reg_RX, (0x3 << 5) | 0x02);
 }
 
 uint32_t A7105_ID_read(void)
@@ -144,5 +148,38 @@ void A7105_ID_write(uint32_t ID)
     idbytes[3] = ID >> 0;
 
     SPI_reg_multi_write(A7105_reg_ID, idbytes, 4);
+}
+
+void A7105_set_channel(uint8_t chnl)
+{
+    SPI_reg_write(A7105_reg_channel, chnl);
+}
+
+void A7105_set_mode(enum A7105_mode mode)
+{
+    uint8_t rxreg;
+
+    // Register 0x18 always reads 0x00, so we have to write the channel
+    // width again.
+
+    // RXSM0 and RXSM1 shall always be set to 1
+    // DMG shall always be set to 0
+    rxreg = 0x3 << 5;
+
+    if(CHNL_WIDTH)
+    {
+        setbit(rxreg, 1);
+    }
+
+    if(mode == master)
+    {
+        clearbit(rxreg, 0);
+    }
+    else
+    {
+        setbit(rxreg, 0);
+    }
+
+    SPI_reg_write(A7105_reg_RX, rxreg);
 }
 

@@ -87,6 +87,14 @@ enum A7105_strobe {
     A7105_strobe_read_reset  = 0xf0
 };
 
+enum A7105_mode{
+    master,
+    slave
+};
+
+// This can't easily be configured dynamically. 1 for 500kHz, 0 for 250kHz
+#define CHNL_WIDTH 1
+
 void A7105_reset(void);
 
 /* A7105_calib: Perform 3 calibrations as in chapter 15 of datasheet.
@@ -113,6 +121,9 @@ void A7105_init(void);
  */
 uint32_t A7105_ID_read(void);
 void A7105_ID_write(uint32_t ID);
+
+void A7105_set_channel(uint8_t);
+void A7105_set_mode(enum A7105_mode);
 
 #endif
 

@@ -56,6 +56,9 @@ int main(void)
 {
     init();
 
+    A7105_set_channel(20);
+    A7105_set_mode(slave);
+
     printf("\n\nA7105 initialized successfully!\n");
 
     printf("\nCalibration result: 0x%02hhx\n", A7105_calib());
