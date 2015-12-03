@@ -152,6 +152,8 @@ uint8_t calib_all(void)
     retval |= calib_VCO_current();
     retval |= calib_filter_bank();
 
+    SPI_single_write(A7105_strobe_standby);
+
     return(retval);
 }
 
