@@ -165,8 +165,9 @@ void A7105_init(void)
     // A channel width of 500KHz is recommended. 16MHz/(4*500KHz)-1 = 7,
     // leave all the other bits as they are.
     SPI_reg_write(A7105_reg_PLLII, 0xf0 | (7 << 1));
-    // Note: To stay in the 2.4 to 2.5 GHz ISM band, only channels 0
-    // through 98 should be used (with "Auto IF Exchange" enabled).
+    // Note: To stay in the 2.4 to 2.483 GHz ISM band, only channels 1
+    // through 166 should be used (with "Auto IF Exchange" enabled, master
+    // sends on 1-166, slave sends on 0-165).
 
     /* Current understanding of the datasheet (concerning Auto IF):
      * Master sends on channel n, sets ULS=0 to receive on channel n-1.
