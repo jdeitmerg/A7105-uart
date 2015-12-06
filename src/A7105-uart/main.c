@@ -56,6 +56,7 @@ int main(void)
 {
     init();
 
+    A7105_ID_write(0x543210FE);
     A7105_set_channel(20);
     A7105_set_mode(slave);
 
@@ -65,6 +66,8 @@ int main(void)
 
     while(1)
     {
+        printf("Received byte: 0x%02hhx\n", A7105_receive_byte());
+        _delay_ms(400);
     }
 }
 

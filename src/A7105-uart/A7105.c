@@ -119,6 +119,12 @@ void A7105_init(void)
     // Although it always reads 0, we assume 500KHz is already selected
     // after reset.
     // SPI_reg_write(A7105_reg_RX, (0x3 << 5) | 0x02);
+
+    // Disable FIFO extension (FPM = 0) and segmentation (PSA = 0)
+    SPI_reg_write(A7105_reg_FIFOII, 0);
+
+    // Set FIFO size to 1 (for testing only)
+    SPI_reg_write(A7105_reg_FIFOI, 0);
 }
 
 uint32_t A7105_ID_read(void)
@@ -181,5 +187,32 @@ void A7105_set_mode(enum A7105_mode mode)
     }
 
     SPI_reg_write(A7105_reg_RX, rxreg);
+}
+
+uint8_t A7105_receive_byte(void)
+{
+    uint8_t data;
+
+    SPI_single_write(A7105_strobe_PLL);
+    SPI_single_write(A7105_strobe_RX_reset);
+    SPI_single_write(A7105_strobe_RX);
+
+    _delay_ms(100);
+
+    data = SPI_reg_read(A7105_reg_FIFO_data);
+    SPI_single_write(A7105_strobe_standby);
+
+    return(data);
+}
+
+void A7105_send_byte(uint8_t data)
+{
+    SPI_single_write(A7105_strobe_PLL);
+    SPI_single_write(A7105_strobe_TX_reset);
+    SPI_reg_write(A7105_reg_FIFO_data, data);
+
+    SPI_single_write(A7105_strobe_TX);
+    _delay_ms(100);
+    SPI_single_write(A7105_strobe_standby);
 }
 

@@ -77,14 +77,14 @@ enum A7105_reg {
 };
 
 enum A7105_strobe {
-    A7105_strobe_sleep       = 0x80,
-    A7105_strobe_idle        = 0x90,
-    A7105_strobe_standby     = 0xa0,
-    A7105_strobe_PLL         = 0xb0,
-    A7105_strobe_RX          = 0xc0,
-    A7105_strobe_TX          = 0xd0,
-    A7105_strobe_write_reset = 0xe0,
-    A7105_strobe_read_reset  = 0xf0
+    A7105_strobe_sleep    = 0x80,
+    A7105_strobe_idle     = 0x90,
+    A7105_strobe_standby  = 0xa0,
+    A7105_strobe_PLL      = 0xb0,
+    A7105_strobe_RX       = 0xc0,
+    A7105_strobe_TX       = 0xd0,
+    A7105_strobe_TX_reset = 0xe0,
+    A7105_strobe_RX_reset = 0xf0
 };
 
 enum A7105_mode{
@@ -124,6 +124,9 @@ void A7105_ID_write(uint32_t ID);
 
 void A7105_set_channel(uint8_t);
 void A7105_set_mode(enum A7105_mode);
+
+uint8_t A7105_receive_byte(void);
+void A7105_send_byte(uint8_t data);
 
 #endif
 
